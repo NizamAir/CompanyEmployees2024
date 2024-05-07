@@ -22,48 +22,6 @@ namespace CompanyEmployees2024.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Entities.Models.Doctor", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Comment")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("DoctorId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Education")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FatherName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ImageName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Specialization")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("WorkExperience")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DoctorId");
-
-                    b.ToTable("Doctors");
-                });
-
             modelBuilder.Entity("Entities.Models.Product", b =>
                 {
                     b.Property<Guid>("Id")
@@ -87,7 +45,7 @@ namespace CompanyEmployees2024.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Products");
+                    b.ToTable("Products", (string)null);
                 });
 
             modelBuilder.Entity("Entities.Models.Review", b =>
@@ -119,7 +77,7 @@ namespace CompanyEmployees2024.Migrations
 
                     b.HasIndex("UserWhoRatedId");
 
-                    b.ToTable("Reviews");
+                    b.ToTable("Reviews", (string)null);
                 });
 
             modelBuilder.Entity("Entities.Models.Shift", b =>
@@ -154,7 +112,7 @@ namespace CompanyEmployees2024.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("Shifts");
+                    b.ToTable("Shifts", (string)null);
                 });
 
             modelBuilder.Entity("Entities.Models.User", b =>
@@ -259,6 +217,32 @@ namespace CompanyEmployees2024.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "918b8855-cd45-45ec-9fb0-068f47026e74",
+                            Name = "Doctor",
+                            NormalizedName = "DOCTOR"
+                        },
+                        new
+                        {
+                            Id = "5f218988-d34b-4494-a1b6-33159a0877dd",
+                            Name = "Admin",
+                            NormalizedName = "ADMIN"
+                        },
+                        new
+                        {
+                            Id = "10648d8b-b4f8-48be-bd2c-ab021a020e09",
+                            Name = "Assistant",
+                            NormalizedName = "ASSISTANT"
+                        },
+                        new
+                        {
+                            Id = "a453b334-360d-4551-8359-dcbe73f1142e",
+                            Name = "User",
+                            NormalizedName = "USER"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -365,15 +349,6 @@ namespace CompanyEmployees2024.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
-                });
-
-            modelBuilder.Entity("Entities.Models.Doctor", b =>
-                {
-                    b.HasOne("Entities.Models.User", "DoctorUser")
-                        .WithMany()
-                        .HasForeignKey("DoctorId");
-
-                    b.Navigation("DoctorUser");
                 });
 
             modelBuilder.Entity("Entities.Models.Review", b =>
