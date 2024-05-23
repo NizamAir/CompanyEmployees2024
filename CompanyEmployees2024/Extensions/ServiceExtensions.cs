@@ -74,15 +74,19 @@ namespace CompanyEmployees2024.Extensions
             {
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
+
                     ValidateIssuer = true,
                     ValidateAudience = true,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
 
+                    ClockSkew = TimeSpan.Zero,
                     ValidIssuer = jwtSettings["validIssuer"],
                     ValidAudience = jwtSettings["validAudience"],
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
+                    
                 };
+                
             });
         }
     }

@@ -6,6 +6,7 @@
         IEmployeeRepository Employee { get; }
         IShiftRepository Shift { get; }
         IProductRepository Product { get; }
+        IDoctorRepository Doctor { get; }
         Task SaveAsync();
     }
 }

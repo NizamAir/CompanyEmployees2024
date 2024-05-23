@@ -14,7 +14,7 @@ namespace CompanyEmployees.Presentation.Controllers
         {
             _service = service;
         }
-        [HttpPost("doctor")]
+        /*[HttpPost("doctor")]
         [Authorize(Roles = "Doctor")]
         public async Task<IActionResult> CreateShiftDoctor([FromBody] ShiftForDoctorCreationDto shifts)
         {
@@ -30,7 +30,7 @@ namespace CompanyEmployees.Presentation.Controllers
             }
 
             return Ok();
-        }
+        }*/
 
         [HttpPost("assistant")]
         [Authorize(Roles = "Assistant")]
@@ -48,7 +48,7 @@ namespace CompanyEmployees.Presentation.Controllers
             return Ok();
         }
 
-        [HttpPost("user")]
+        /*[HttpPost("user")]
         [Authorize(Roles = "User")]
         public async Task<IActionResult> UpdateShiftClient([FromBody] ShiftForClientCreationDto shiftForClient)
         {
@@ -59,7 +59,7 @@ namespace CompanyEmployees.Presentation.Controllers
             await _service.ShiftService.UpdateShiftClient(userId, shiftForClient.DoctorId, shiftForClient.Date, trackChanges: true);
             
             return Ok();
-        }
+        }*/
 
 
         [HttpGet]
@@ -69,12 +69,12 @@ namespace CompanyEmployees.Presentation.Controllers
             return Ok(shifts);
         }
 
-        [HttpGet("doctor/{doctorId}")]
+        /*[HttpGet("doctor/{doctorId}")]
         public async Task<IActionResult> GetShiftsByDoctor(string doctorId)
         {
             var shifts = await _service.ShiftService.GetShiftsByDoctor(doctorId, trackChanges: false);
             return Ok(shifts);
-        }
+        }*/
 
         [HttpGet("{id:guid}", Name = "ShiftById")]
         public async Task<IActionResult> GetShift(Guid id)

@@ -19,13 +19,16 @@ namespace Repository
             await FindByCondition(s => s.DoctorId.Equals(doctorId), trackChanges)
             .OrderBy(w => w.ShiftDate.Date).ToListAsync();
 
+        public async Task<IEnumerable<Shift>> GetShiftsByAssistant(string assistantId, bool trackChanges) =>
+            await FindByCondition(s => s.AssistentId.Equals(assistantId), trackChanges)
+            .OrderBy(w => w.ShiftDate.Date).ToListAsync();
+
         public void CreateShift(Shift shift) => Create(shift);
         public void DeleteShift(Shift shift) => Delete(shift);
 
         public async Task<Shift> GetShift(Guid id, bool trackChanges) =>
             await FindByCondition(s => s.Id.Equals(id), trackChanges).SingleOrDefaultAsync();
 
-
-
+        
     }
 }

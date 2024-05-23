@@ -14,6 +14,7 @@ namespace Service
         private readonly Lazy<IAuthenticationService> _authenticationService;
         private readonly Lazy<IShiftService> _shiftService;
         private readonly Lazy<IProductService> _productService;
+        private readonly Lazy<IDoctorService> _doctorService;
 
         public ServiceManager(IRepositoryManager repositoryManager, ILoggerManager logger, IMapper mapper, UserManager<User> userManager, IConfiguration configuration)
         {
@@ -22,6 +23,7 @@ namespace Service
             _authenticationService = new Lazy<IAuthenticationService>(() => new AuthenticationService(logger, mapper, userManager, configuration));
             _shiftService = new Lazy<IShiftService>(() => new ShiftService(repositoryManager, mapper, userManager));
             _productService = new Lazy<IProductService>(() => new ProductService(repositoryManager, mapper));
+            _doctorService = new Lazy<IDoctorService>(() => new DoctorService(repositoryManager, mapper));
         }
         public ICompanyService CompanyService => _companyService.Value;
 
@@ -32,5 +34,7 @@ namespace Service
         public IShiftService ShiftService => _shiftService.Value;
 
         public IProductService ProductService => _productService.Value;
+
+        public IDoctorService DoctorService => _doctorService.Value;
     }
 }

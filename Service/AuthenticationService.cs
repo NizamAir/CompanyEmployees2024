@@ -3,6 +3,7 @@ using Contracts;
 using Entities.Exceptions;
 using Entities.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Service.Contracts;
@@ -64,7 +65,7 @@ namespace Service
             var refreshToken = GenerateRefreshToken();
             _user.RefreshToken = refreshToken;
             if (populateExp)
-                _user.RefreshTokenExpiryTime = DateTime.Now.AddDays(7);
+                _user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
             await _userManager.UpdateAsync(_user);
             var accessToken = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
             return new TokenDto(accessToken, refreshToken);
@@ -102,7 +103,7 @@ namespace Service
                 issuer: jwtSettings["validIssuer"],
                 audience: jwtSettings["validAudience"],
                 claims: claims,
-                expires: DateTime.Now.AddMinutes(Convert.ToDouble(jwtSettings["expires"])),
+                expires: DateTime.UtcNow.AddMinutes(Double.Parse(jwtSettings["expires"])),
                 signingCredentials: signingCredentials
             );
             return tokenOptions;
@@ -128,10 +129,12 @@ namespace Service
                 ValidateAudience = true,
                 ValidateIssuer = true,
                 ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("this is my custom Secret key for authentication")),
-                ValidateLifetime = true,
+                ValidateLifetime = false,
+
+                ClockSkew = TimeSpan.Zero,
                 ValidIssuer = jwtSettings["validIssuer"],
-                ValidAudience = jwtSettings["validAudience"]
+                ValidAudience = jwtSettings["validAudience"],
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("this is my custom Secret key for authentication"))
             };
             var tokenHandler = new JwtSecurityTokenHandler();
             SecurityToken securityToken;
@@ -148,6 +151,8 @@ namespace Service
         public async Task<TokenDto> RefreshToken(TokenDto tokenDto)
         {
             var principal = GetPrincipalFromExpiredToken(tokenDto.AccessToken);
+            /*var jwtPrincipal = new JwtSecurityTokenHandler().ReadJwtToken(tokenDto.AccessToken).Claims as ClaimsPrincipal;*/
+
             var user = await _userManager.FindByNameAsync(principal.Identity.Name);
             if (user == null || user.RefreshToken != tokenDto.RefreshToken || user.RefreshTokenExpiryTime <= DateTime.Now)
                 throw new RefreshTokenBadRequest();

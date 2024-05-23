@@ -48,16 +48,30 @@ namespace Service
             }
             await _repository.SaveAsync();
         }
-        public async Task UpdateShiftClient(string userId, string doctorId, DateTime date, bool trackChanges)
+        public async Task UpdateShiftClient(string userId, string doctorId, Guid productId, DateTime date, bool trackChanges)
         {
             var shifts = await _repository.Shift.GetShiftsByDoctor(doctorId, trackChanges);
             var shift = shifts.FirstOrDefault(s => s.ShiftDate.Equals(date));
-            var shiftUpdate = new ShiftForUpdateDto(shift.ShiftDate, shift.ProductId, shift.DoctorId, userId, shift.AssistentId);
+            var shiftUpdate = new ShiftForUpdateDto(shift.ShiftDate, productId, shift.DoctorId, userId, shift.AssistentId);
             _mapper.Map(shiftUpdate, shift);
             await _repository.SaveAsync();
         }
 
-
+        public async Task<List<string>> GetTimesForDate(ShiftTimeForDateDto timeForDateDto, bool trackChanges)
+        {
+            var shifts = await _repository.Shift.GetShiftsByDoctor(timeForDateDto.DoctorId, trackChanges);
+            
+            var resShifts = shifts.Where(s => DateOnly.FromDateTime(s.ShiftDate).Equals(DateOnly.FromDateTime(DateTime.Parse(timeForDateDto.Date)))).ToList();
+            var times = new List<string>();
+            foreach (var shift in resShifts)
+            {
+                if (shift.ClientId != null || shift.ShiftDate < DateTime.UtcNow)
+                    continue;
+                else
+                    times.Add(TimeOnly.FromDateTime(shift.ShiftDate).ToString());
+            }
+            return times;
+        }
 
         public async Task<IEnumerable<ShiftDto>> GetAllShifts(bool trackChanges)
         {
@@ -75,6 +89,18 @@ namespace Service
             return shiftsDto;
         }
 
+        public async Task<IEnumerable<ShiftDoctorNameDto>> GetDoctorsForAssistant()
+        {
+            var doctorsEntity = await _userManager.GetUsersInRoleAsync("Doctor");
+            var doctors = new List<ShiftDoctorNameDto>();
+
+            foreach (var doctor in doctorsEntity)
+            {
+                doctors.Add(new ShiftDoctorNameDto() { DoctorId = doctor.Id, FirstName = doctor.FirstName, LastName = doctor.LastName });
+            }
+            return doctors;
+        }
+
         public async Task<IEnumerable<ShiftDto>> GetShiftsByDoctor(string doctorId, bool trackChanges)
         {
             var shifts = await _repository.Shift.GetShiftsByDoctor(doctorId, trackChanges);
@@ -83,6 +109,24 @@ namespace Service
                 shift.DoctorUser = await _userManager.FindByIdAsync(doctorId);
                 if (shift.AssistentId != null)
                     shift.AssistentUser = await _userManager.FindByIdAsync(shift.AssistentId);
+                if (shift.ClientId != null)
+                    shift.ClientUser = await _userManager.FindByIdAsync(shift.ClientId);
+            }
+            var shiftsDto = _mapper.Map<IEnumerable<ShiftDto>>(shifts);
+
+            return shiftsDto;
+        }
+
+        public async Task<IEnumerable<ShiftDto>> GetShiftsByAssistant(string assistantId, bool trackChanges)
+        {
+            var shifts = await _repository.Shift.GetShiftsByAssistant(assistantId, trackChanges);
+            foreach (var shift in shifts)
+            {
+                shift.AssistentUser = await _userManager.FindByIdAsync(assistantId);
+                if (shift.DoctorId != null)
+                    shift.DoctorUser = await _userManager.FindByIdAsync(shift.DoctorId);
+                if (shift.ClientId != null)
+                    shift.ClientUser = await _userManager.FindByIdAsync(shift.ClientId);
             }
             var shiftsDto = _mapper.Map<IEnumerable<ShiftDto>>(shifts);
 

@@ -7,5 +7,6 @@
         IAuthenticationService AuthenticationService { get; }
         IShiftService ShiftService { get; }
         IProductService ProductService { get; }
+        IDoctorService DoctorService { get; }
     }
 }

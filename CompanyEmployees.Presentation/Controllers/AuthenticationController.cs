@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Entities.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Service.Contracts;
 using Shared.DataTransferObjects;
 
@@ -9,7 +11,14 @@ namespace CompanyEmployees.Presentation.Controllers
     public class AuthenticationController : ControllerBase
     {
         private readonly IServiceManager _service;
-        public AuthenticationController(IServiceManager service) => _service = service;
+        private readonly UserManager<User> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
+        public AuthenticationController(IServiceManager service, UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
+        {
+            _service = service;
+            _userManager = userManager;
+            _roleManager = roleManager;
+        }
 
         [HttpPost]
         public async Task<IActionResult> RegisterUser([FromBody] UserForRegistrationDto userForRegistration)
@@ -29,8 +38,11 @@ namespace CompanyEmployees.Presentation.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Authenticate([FromBody] UserForAuthenticationDto user)
         {
-            if (!await _service.AuthenticationService.ValidateUser(user))
+            if (user.UserName == "" || user.Password == "")
                 return StatusCode(400);
+
+            if (!await _service.AuthenticationService.ValidateUser(user))
+                return StatusCode(401);
 
             var tokenDto = await _service.AuthenticationService.CreateToken(populateExp: true);
 
