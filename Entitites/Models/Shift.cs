@@ -23,5 +23,6 @@ namespace Entities.Models
         public string? AssistentId { get; set; }
         [ForeignKey("AssistentId")]
         public User? AssistentUser { get; set; }
+        public Review? Review { get; set; }
     }
 }

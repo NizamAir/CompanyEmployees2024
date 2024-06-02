@@ -8,5 +8,6 @@
         IShiftService ShiftService { get; }
         IProductService ProductService { get; }
         IDoctorService DoctorService { get; }
+        IReviewService ReviewService { get; }
     }
 }

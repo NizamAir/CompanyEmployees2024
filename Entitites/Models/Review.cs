@@ -15,5 +15,8 @@ namespace Entities.Models
         public string UserId { get; set; }
         [ForeignKey("UserId")]
         public User User { get; set; }
+        public Guid ShiftId { get; set; }
+        [ForeignKey("ShiftId")]
+        public Shift Shift { get; set; }
     }
 }

@@ -15,6 +15,27 @@ namespace CompanyEmployees.Presentation.Controllers
             _service = service;
         }
 
+        [HttpGet]
+        [Authorize(Roles = "Assistant")]
+        public async Task<IActionResult> GetAllShifts()
+        {
+            var userId = HttpContext?.User.FindFirst("Id")?.Value;
+            var res = await _service.ShiftService.GetShiftsByAssistant(userId, trackChanges: false);
+            var resToReturn = new List<ShiftAllForAssistantDto>();
+            foreach (var r in res)
+            {
+                var item = new ShiftAllForAssistantDto { DoctorName = r.DoctorName, Date = r.ShiftDate };
+                if (resToReturn.Contains(item))
+                    continue;
+                else
+                    resToReturn.Add(item);
+            }
+            return Ok(resToReturn);
+
+
+
+        }
+
         [HttpGet("doctors")]
         [Authorize(Roles = "Assistant")]
         public async Task<IActionResult> GetDoctors()
@@ -34,7 +55,7 @@ namespace CompanyEmployees.Presentation.Controllers
             var resToReturn = new List<string>();
             foreach (var r in res)
             {
-                if (resToReturn.Contains(r.ShiftDate))
+                if (resToReturn.Contains(r.ShiftDate) || DateOnly.FromDateTime(DateTime.Parse(r.ShiftDate)) < DateOnly.FromDateTime(DateTime.Now))
                     continue;
                 else
                     resToReturn.Add(r.ShiftDate);
@@ -76,6 +97,18 @@ namespace CompanyEmployees.Presentation.Controllers
                 await _service.ShiftService.UpdateShiftAssistant(userId, shiftForAssistant.DoctorId, shift, trackChanges: true);
             }
             return Ok();
+        }
+
+
+        [HttpPost("delete")]
+        [Authorize(Roles = "Assistant")]
+        public async Task<IActionResult> DeleteShiftAssistant([FromBody] ShiftForAssistantDeleteDto shiftForAssistant)
+        {
+            var userId = HttpContext?.User.FindFirst("Id")?.Value;
+
+            await _service.ShiftService.DeleteShiftAssistant(userId, shiftForAssistant.Date, trackChanges: true);
+            
+            return NoContent();
         }
     }
 }

@@ -7,6 +7,7 @@
         IShiftRepository Shift { get; }
         IProductRepository Product { get; }
         IDoctorRepository Doctor { get; }
+        IReviewRepository Review { get; }
         Task SaveAsync();
     }
 }

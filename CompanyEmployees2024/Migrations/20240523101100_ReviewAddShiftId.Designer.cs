@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Repository;
 
@@ -11,9 +12,11 @@ using Repository;
 namespace CompanyEmployees2024.Migrations
 {
     [DbContext(typeof(RepositoryContext))]
-    partial class RepositoryContextModelSnapshot : ModelSnapshot
+    [Migration("20240523101100_ReviewAddShiftId")]
+    partial class ReviewAddShiftId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -269,29 +272,28 @@ namespace CompanyEmployees2024.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "918b8855-cd45-45ec-9fb0-068f47026e74",
+                            Id = "23111ff8-0caa-447c-829e-3bef25209348",
                             Name = "Doctor",
                             NormalizedName = "DOCTOR"
                         },
                         new
                         {
-                            Id = "5f218988-d34b-4494-a1b6-33159a0877dd",
+                            Id = "eb428f3b-d57e-475c-bd2f-0c2e4849c39c",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "10648d8b-b4f8-48be-bd2c-ab021a020e09",
+                            Id = "3f86c03f-c66f-47f6-9aec-7389316df8ec",
                             Name = "Assistant",
                             NormalizedName = "ASSISTANT"
                         },
                         new
                         {
-                            Id = "a453b334-360d-4551-8359-dcbe73f1142e",
+                            Id = "7b2aee99-f23a-4083-a9ff-59e4b643302d",
                             Name = "User",
                             NormalizedName = "USER"
                         });
-                    
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

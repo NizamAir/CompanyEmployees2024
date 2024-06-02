@@ -15,6 +15,17 @@ namespace CompanyEmployees.Presentation.Controllers
             _service = service;
         }
 
+        [HttpGet]
+        [Authorize(Roles = "User")]
+        public async Task<IActionResult> GetAllShifts()
+        {
+            var userId = HttpContext?.User.FindFirst("Id")?.Value;
+            var res = await _service.ShiftService.GetShiftsByClient(userId, trackChanges: false);
+
+            return Ok(res.OrderByDescending(r => r.ShiftDate));
+
+        }
+
         [HttpGet("doctors")]
         [Authorize(Roles = "User")]
         public async Task<IActionResult> GetDoctors()
@@ -69,5 +80,12 @@ namespace CompanyEmployees.Presentation.Controllers
             return Ok();
         }
 
+        [HttpDelete("{id:guid}")]
+        [Authorize(Roles = "User")]
+        public async Task<IActionResult> DeleteShiftClient(Guid id)
+        {
+            await _service.ShiftService.DeleteShiftClient(id, trackChanges: true);
+            return NoContent();
+        }
     }
 }

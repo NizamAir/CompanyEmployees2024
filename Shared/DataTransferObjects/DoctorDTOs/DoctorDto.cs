@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Shared.DataTransferObjects.ReviewDTOs;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;

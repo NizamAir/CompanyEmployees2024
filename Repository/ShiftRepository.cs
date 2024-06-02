@@ -23,6 +23,10 @@ namespace Repository
             await FindByCondition(s => s.AssistentId.Equals(assistantId), trackChanges)
             .OrderBy(w => w.ShiftDate.Date).ToListAsync();
 
+        public async Task<IEnumerable<Shift>> GetShiftsByClient(string clientId, bool trackChanges) =>
+            await FindByCondition(s => s.ClientId.Equals(clientId), trackChanges)
+            .OrderBy(w => w.ShiftDate.Date).ToListAsync();
+
         public void CreateShift(Shift shift) => Create(shift);
         public void DeleteShift(Shift shift) => Delete(shift);
 

@@ -10,6 +10,7 @@ namespace Repository
         private readonly Lazy<IShiftRepository> _shiftRepository;
         private readonly Lazy<IProductRepository> _productRepository;
         private readonly Lazy<IDoctorRepository> _doctorRepository;
+        private readonly Lazy<IReviewRepository> _reviewRepository;
 
         public RepositoryManager(RepositoryContext repositoryContext)
         {
@@ -19,12 +20,14 @@ namespace Repository
             _shiftRepository = new Lazy<IShiftRepository>(() => new ShiftRepository(repositoryContext));
             _productRepository = new Lazy<IProductRepository>(() => new ProductRepository(repositoryContext));
             _doctorRepository = new Lazy<IDoctorRepository>(() => new DoctorRepository(repositoryContext));
+            _reviewRepository = new Lazy<IReviewRepository>(() => new ReviewRepository(repositoryContext));
         }
         public ICompanyRepository Company => _companyRepository.Value;
         public IEmployeeRepository Employee => _employeeRepository.Value;
         public IShiftRepository Shift => _shiftRepository.Value;
         public IProductRepository Product => _productRepository.Value;
         public IDoctorRepository Doctor => _doctorRepository.Value;
+        public IReviewRepository Review => _reviewRepository.Value;
         public async Task SaveAsync() => await _repositoryContext.SaveChangesAsync();
     }
 }
